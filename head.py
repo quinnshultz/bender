@@ -7,7 +7,7 @@ from pocketsphinx import LiveSpeech
 from bs4 import BeautifulSoup
 
 # Create a new object for interacting with the robot's hardware
-ass = ass.ShinyMetal()
+shinyMetal = ass.ShinyMetal()
 
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
@@ -18,8 +18,8 @@ conversation = [
     {"role": "system", "content": """
     Imagine you are Bender the robot.
     The main python functions you can use are:
-    ass.move_forward(distance): Moves the robot a specified distance. Returns current gps location.
-    ass.bend(): Bend the girder in your robot claws.
+    shinyMetal.move_forward(distance): Moves the robot a specified distance. Returns current gps location.
+    shinyMetal.bend(): Bend the girder in your robot claws.
     All of your outputs need to be identified by one of the following tags:
     <question> Always ask me a clarification question if you are unsure. </question>
     <speak> Say (or sing) a statement or song. </speak>
@@ -28,7 +28,7 @@ conversation = [
     Me: Move forward.
     You: <question> How far should I move? </question>
     Me: Three feet.
-    You: <python> current_position = ass.move_forward(3) </python>
+    You: <python> current_position = shinyMetal.move_forward(3) </python>
     """},
     
     {"role": "user", "content": "Are you ready?"}
