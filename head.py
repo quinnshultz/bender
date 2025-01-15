@@ -45,7 +45,7 @@ parsedSpeech = soup.find_all('speak')
 for speech in parsedSpeech:
     print("Bender (speaking): " + speech.get_text())
     shinyMetal.read(speech.get_text().replace("""'""", "").replace("\n", " "))
-    os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " ")) # Placeholder: This works on MacOS but needs to be replaced with another text to speech library
+    #os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " ")) # Placeholder: This works on MacOS but needs to be replaced with another text to speech library
 
 conversation.append({"role" : "assistant", "content" : myRetort})
 
@@ -68,12 +68,12 @@ for phrase in LiveSpeech():
     for speech in parsedSpeech:
         print("Bender (speaking): " + speech.get_text())
         shinyMetal.read(speech.get_text().replace("""'""", "").replace("\n", " "))
-        os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " "))
+        #os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " "))
 
     for question in parsedQuestions:
         print("Bender (inquisiting): " + question.get_text())
         shinyMetal.read(question.get_text().replace("""'""", "").replace("\n", " "))
-        os.system("say " + question.get_text().replace("""'""", "").replace("\n", " "))
+        #os.system("say " + question.get_text().replace("""'""", "").replace("\n", " "))
 
     for python in parsedCommands:
         print("Bender: (Running program)")

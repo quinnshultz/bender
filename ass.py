@@ -1,4 +1,4 @@
-import requests, uuid, time
+import requests, uuid, time, os
 
 # For interacting with the Robot's hardware
 class ShinyMetal:
@@ -17,7 +17,7 @@ class ShinyMetal:
 
         json_data = {
             'uuid_idempotency_token': str(uuid.uuid4()),
-            'tts_model_token': 'TM:7wbtjphx8h8v',
+            'tts_model_token': 'weight_ezz18fc5a9mvjsg61bgxst6q3',
             'inference_text': input
         }
 
@@ -26,10 +26,14 @@ class ShinyMetal:
         print(pollUrl)
         # Polling
         flag = True
+        outputFile = 'null'
         while (flag):
             pollResponse = requests.get(pollUrl, headers)
             print(pollResponse)
             time.sleep(1)
             if(pollResponse.json()['state']['status'] != 'pending' and pollResponse.json()['state']['status'] != 'started'):
                 flag = False
-                print(pollResponse.json()['state']['maybe_public_bucket_wav_audio_path'])
+                outputFile = 'https://cdn-2.fakeyou.com' + pollResponse.json()['state']['maybe_public_bucket_wav_audio_path']
+        print(outputFile)
+        os.system('curl ' + outputFile + ' --output test.wav')
+        os.system('afplay test.wav')
