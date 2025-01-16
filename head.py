@@ -10,20 +10,21 @@ from bs4 import BeautifulSoup
 # Create a new object for interacting with the robot's hardware
 shinyMetal = ass.ShinyMetal()
 
-openai.api_key = os.environ.get('OPENAI_API_KEY')
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 cmdLineDescription = "Adding description"
 
 # Initialize parser
-parser = argparse.ArgumentParser(description = cmdLineDescription)
-parser.add_argument("-k", "--Keyboard", help = "Enable Keyboard")
+parser = argparse.ArgumentParser(description=cmdLineDescription)
+parser.add_argument("-k", "--Keyboard", help="Enable Keyboard")
 args = parser.parse_args()
 
 # TODO: Separate "short-term memory" into another variable
 conversation = [
-    
     # ChatGPT Prompt
-    {"role": "system", "content": """
+    {
+        "role": "system",
+        "content": """
     Imagine you are Bender the robot.
     The main python functions you can use are:
     shinyMetal.move_forward(distance): Moves the robot a specified distance. Returns current gps location.
@@ -37,58 +38,45 @@ conversation = [
     You: <question> How far should I move? </question>
     Me: Three feet.
     You: <python> current_position = shinyMetal.move_forward(3) </python>
-    """},
-    
-    {"role": "user", "content": "Are you ready?"}
+    """,
+    },
+    {"role": "user", "content": "Are you ready?"},
 ]
 
-completion = openai.ChatCompletion.create(
-  model="gpt-3.5-turbo",
-  messages=conversation
-)
+completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=conversation)
 
 myRetort = str(completion.choices[0].message.content)
-soup = BeautifulSoup(myRetort, 'html.parser')
-parsedSpeech = soup.find_all('speak')
+soup = BeautifulSoup(myRetort, "html.parser")
+parsedSpeech = soup.find_all("speak")
 for speech in parsedSpeech:
     print("Bender (speaking): " + speech.get_text())
     shinyMetal.read(speech.get_text().replace("""'""", "").replace("\n", " "))
-    #os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " ")) # Placeholder: This works on MacOS but needs to be replaced with another text to speech library
+    # os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " ")) # Placeholder: This works on MacOS but needs to be replaced with another text to speech library
 
-conversation.append({"role" : "assistant", "content" : myRetort})
+conversation.append({"role": "assistant", "content": myRetort})
 
-if args.Keyboard:
-    userInput = input()
-    while (userInput != "exit()"):
-        userInput = input()
-
-    exit()
-
-for phrase in LiveSpeech():
-    humanSpeech = str(phrase)
-    print(humanSpeech)
-    conversation.append({"role" : "user", "content" : humanSpeech})
+def chatgpt(humanSpeech):
+    conversation.append({"role": "user", "content": humanSpeech})
 
     completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=conversation
+        model="gpt-3.5-turbo", messages=conversation
     )
 
     myRetort = str(completion.choices[0].message.content)
-    soup = BeautifulSoup(myRetort, 'html.parser')
-    parsedQuestions = soup.find_all('question')
-    parsedSpeech = soup.find_all('speak')
-    parsedCommands = soup.find_all('python')
-    
+    soup = BeautifulSoup(myRetort, "html.parser")
+    parsedQuestions = soup.find_all("question")
+    parsedSpeech = soup.find_all("speak")
+    parsedCommands = soup.find_all("python")
+
     for speech in parsedSpeech:
         print("Bender (speaking): " + speech.get_text())
         shinyMetal.read(speech.get_text().replace("""'""", "").replace("\n", " "))
-        #os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " "))
+        # os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " "))
 
     for question in parsedQuestions:
         print("Bender (inquisiting): " + question.get_text())
         shinyMetal.read(question.get_text().replace("""'""", "").replace("\n", " "))
-        #os.system("say " + question.get_text().replace("""'""", "").replace("\n", " "))
+        # os.system("say " + question.get_text().replace("""'""", "").replace("\n", " "))
 
     for python in parsedCommands:
         print("Bender: (Running program)")
@@ -99,4 +87,19 @@ for phrase in LiveSpeech():
         except:
             print("Unable to execute command!")
 
-    conversation.append({"role" : "assistant", "content" : myRetort})
+    conversation.append({"role": "assistant", "content": myRetort})
+
+
+if args.Keyboard:
+    userInput = input()
+    while userInput != "exit()":
+        chatgpt(userInput)
+        userInput = input()
+    exit()
+
+for phrase in LiveSpeech():
+    humanSpeech = str(phrase)
+    print(humanSpeech)
+    chaptgpt(humanSpeech)
+
+
