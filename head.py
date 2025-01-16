@@ -3,6 +3,7 @@
 import os
 import ass
 import openai
+import argparse
 from pocketsphinx import LiveSpeech
 from bs4 import BeautifulSoup
 
@@ -10,6 +11,13 @@ from bs4 import BeautifulSoup
 shinyMetal = ass.ShinyMetal()
 
 openai.api_key = os.environ.get('OPENAI_API_KEY')
+
+cmdLineDescription = "Adding description"
+
+# Initialize parser
+parser = argparse.ArgumentParser(description = cmdLineDescription)
+parser.add_argument("-k", "--Keyboard", help = "Enable Keyboard")
+args = parser.parse_args()
 
 # TODO: Separate "short-term memory" into another variable
 conversation = [
@@ -48,6 +56,13 @@ for speech in parsedSpeech:
     #os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " ")) # Placeholder: This works on MacOS but needs to be replaced with another text to speech library
 
 conversation.append({"role" : "assistant", "content" : myRetort})
+
+if args.Keyboard:
+    userInput = input()
+    while (userInput != "exit()"):
+        userInput = input()
+
+    exit()
 
 for phrase in LiveSpeech():
     humanSpeech = str(phrase)
