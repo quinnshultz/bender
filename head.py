@@ -29,6 +29,7 @@ conversation = [
     The main python functions you can use are:
     shinyMetal.move_forward(distance): Moves the robot a specified distance. Returns current gps location.
     shinyMetal.bend(): Bend the girder in your robot claws.
+    read_long_term_memory(): Reads from the long term memory file on disk.
     All of your outputs need to be identified by one of the following tags:
     <question> Always ask me a clarification question if you are unsure. </question>
     <speak> Say (or sing) a statement or song. </speak>
@@ -54,6 +55,12 @@ for speech in parsedSpeech:
     # os.system("say " + speech.get_text().replace("""'""", "").replace("\n", " ")) # Placeholder: This works on MacOS but needs to be replaced with another text to speech library
 
 conversation.append({"role": "assistant", "content": myRetort})
+
+def read_long_term_memory():
+    file_path = 'long_term_memory.txt'
+    with open(file_path, 'r') as f:
+        for line in f:
+            conversation.append({"role": "assistant", "content": line.strip()})
 
 def chatgpt(humanSpeech):
     conversation.append({"role": "user", "content": humanSpeech})
